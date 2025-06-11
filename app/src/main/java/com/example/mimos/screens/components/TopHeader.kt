@@ -21,7 +21,8 @@ import com.example.mimos.R
 @Composable
 fun TopHeader(
     onMenuClick: () -> Unit,
-    onNotificationsClick: () -> Unit
+    onNotificationsClick: () -> Unit,
+    onUserClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
@@ -51,7 +52,7 @@ fun TopHeader(
             IconButton(onClick = { /* TODO: Carrito */ }) {
                 Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Carrito", tint = Color.White)
             }
-            IconButton(onClick = { /* TODO: Usuario */ }) {
+            IconButton(onClick = { onUserClick() }) {
                 Icon(imageVector = Icons.Default.Person, contentDescription = "Usuario", tint = Color.White)
             }
         }

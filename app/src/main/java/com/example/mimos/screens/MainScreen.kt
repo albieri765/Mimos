@@ -21,12 +21,14 @@ import com.example.mimos.screens.components.FooterSection
 import com.example.mimos.screens.components.InfoSection
 import com.example.mimos.screens.components.SectionTitle
 import com.example.mimos.screens.components.DrawerContent
+import com.example.mimos.screens.components.LoginDialog
 import com.example.mimos.screens.components.NotificationDrawerContent
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
+    var showLoginDialog by remember { mutableStateOf(false) }
     val scrollState = rememberScrollState()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -66,11 +68,27 @@ fun MainScreen() {
                 }
             }
         ) {
+            if (showLoginDialog) {
+                LoginDialog(
+                    onDismiss = { showLoginDialog = false },
+                    onLoginClick = { email, password ->
+                        println("Iniciar sesión con: $email y $password")
+                        showLoginDialog = false
+                    },
+                    onForgotPassword = {
+                        println("Olvidaste tu contraseña")
+                    },
+                    onCreateAccount = {
+                        println("Crear nueva cuenta")
+                    }
+                )
+            }
             Scaffold(
                 topBar = {
                     TopHeader(
                         onMenuClick = { scope.launch { drawerState.open() } },
-                        onNotificationsClick = { scope.launch { notificationDrawerState.open() } }
+                        onNotificationsClick = { scope.launch { notificationDrawerState.open() } },
+                        onUserClick = { showLoginDialog = true }
                     )
                 }
             ) { innerPadding ->

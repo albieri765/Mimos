@@ -10,6 +10,8 @@ import androidx.compose.ui.unit.dp
 import com.example.mimos.screens.components.TopHeader
 import com.example.mimos.screens.components.SearchBar
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.ui.Alignment
+import com.example.mimos.screens.components.ProductPager
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -24,7 +26,16 @@ fun MainScreen() {
         TopHeader()
         Spacer(modifier = Modifier.height(8.dp))
         SearchBar()
-        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "¡Encuentra todo lo que tu mascota necesita!",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
+                .wrapContentWidth(Alignment.CenterHorizontally)
+        )
+        Spacer(modifier = Modifier.height(24.dp))
+        ProductPager()
     }
 }
 

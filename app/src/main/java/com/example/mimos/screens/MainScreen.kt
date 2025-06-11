@@ -12,6 +12,7 @@ import com.example.mimos.screens.components.SearchBar
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.Alignment
 import com.example.mimos.screens.components.ProductPager
+import com.example.mimos.screens.components.CategoryCarousel
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -36,6 +37,24 @@ fun MainScreen() {
         )
         Spacer(modifier = Modifier.height(24.dp))
         ProductPager()
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Lo que necesita tu perrito:",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, top = 8.dp)
+                .wrapContentWidth(Alignment.CenterHorizontally)
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        CategoryCarousel { category ->
+            // Por ahora, solo mostramos el nombre en consola o con un Toast
+            println("Categoría seleccionada: $category")
+
+            // 🔜 Más adelante aquí irás a otra pantalla
+            // navController.navigate("ruta_a_${category}")
+        }
     }
 }
 

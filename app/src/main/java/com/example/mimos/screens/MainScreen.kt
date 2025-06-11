@@ -30,7 +30,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavHostController
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mimos.screens.pages.Pagina1Screen
+import com.example.mimos.screens.pages.Pagina2Screen
+import com.example.mimos.screens.pages.Pagina3Screen
+import com.example.mimos.view.ProductoViewModel
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -40,9 +45,11 @@ fun MainScreen() {
     val scrollState = rememberScrollState()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
-    var showNotifications by remember { mutableStateOf(false) }
     val notificationDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val navController = rememberNavController()
+
+    // ✅ ViewModel global compartido
+    val productoViewModel: ProductoViewModel = viewModel()
 
     ModalNavigationDrawer(
         drawerState = cartDrawerState,
@@ -55,7 +62,7 @@ fun MainScreen() {
             ) {
                 CartDrawerContent(
                     onClose = { scope.launch { cartDrawerState.close() } },
-                    onViewCart = { println("Ir a ver carrito") },
+                    onViewCart = { navController.navigate("carrito") },
                     onPay = { println("Pagar") }
                 )
             }
@@ -87,7 +94,10 @@ fun MainScreen() {
                             .windowInsetsPadding(WindowInsets.statusBars)
                     ) {
                         DrawerContent(
-                            onNavigate = { route -> println("Navegar a: $route") },
+                            onNavigate = { route ->
+                                navController.navigate(route)
+                                scope.launch { drawerState.close() }
+                            },
                             onCloseDrawer = { scope.launch { drawerState.close() } }
                         )
                     }
@@ -118,7 +128,7 @@ fun MainScreen() {
                             onCartClick = { scope.launch { cartDrawerState.open() } },
                             onHomeClick = {
                                 navController.navigate("home") {
-                                    popUpTo("home") { inclusive = true } // Limpia la pila y evita múltiples copias
+                                    popUpTo("home") { inclusive = true }
                                 }
                                 scope.launch {
                                     scrollState.animateScrollTo(0)
@@ -127,7 +137,6 @@ fun MainScreen() {
                         )
                     }
                 ) { innerPadding ->
-
                     NavHost(
                         navController = navController,
                         startDestination = "home",
@@ -148,9 +157,20 @@ fun MainScreen() {
                                 }
                             )
                         }
-                        composable("pagina1") { Pagina1Screen(titulo = "Página 1") }
-                        composable("pagina2") { Pagina1Screen(titulo = "Página 2") }
-                        composable("pagina3") { Pagina1Screen(titulo = "Página 3") }
+                        composable("pagina1") {
+                            Pagina1Screen(navController = navController, viewModel = productoViewModel)
+                        }
+                        // ✅ Agregar la ruta carrito
+                        composable("carrito") {
+                            PaginaDetalle(titulo = "Carrito")
+                        }
+                        // Opcionalmente otras páginas
+                        composable("pagina2") {
+                            PaginaDetalle(titulo = "Página 2")
+                        }
+                        composable("pagina3") {
+                            PaginaDetalle(titulo = "Página 3")
+                        }
                     }
                 }
             }

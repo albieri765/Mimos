@@ -10,11 +10,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mimos.R
+import com.example.mimos.data.ProductoModel
 import com.example.mimos.screens.components.SearchBar
 import com.example.mimos.screens.components.FooterSection
 
 @Composable
-fun Pagina2Screen(titulo: String) {
+fun Pagina2Screen(titulo: String, productos: List<ProductoModel>, total: Int) {
     Column(
         modifier = Modifier
             .fillMaxSize()

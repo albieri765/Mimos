@@ -41,6 +41,9 @@ android {
 
 dependencies {
 
+    implementation("io.coil-kt:coil-compose:2.2.2")
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("androidx.navigation:navigation-compose:2.7.7")
     implementation ("androidx.compose.material:material-icons-extended:1.2.1")
     implementation ("com.google.accompanist:accompanist-pager:0.34.0")

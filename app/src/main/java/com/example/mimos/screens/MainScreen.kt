@@ -13,15 +13,21 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.Alignment
 import com.example.mimos.screens.components.ProductPager
 import com.example.mimos.screens.components.CategoryCarousel
+import com.example.mimos.screens.components.SectionDivider
+import com.example.mimos.screens.components.FeatureButtons
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen() {
+    val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(Color.White)
+            .verticalScroll(scrollState)
             .padding(16.dp)
     ) {
         TopHeader()
@@ -55,6 +61,16 @@ fun MainScreen() {
             // 🔜 Más adelante aquí irás a otra pantalla
             // navController.navigate("ruta_a_${category}")
         }
+        Spacer(modifier = Modifier.height(24.dp))
+
+        SectionDivider(text = "Explora más opciones")
+
+        Spacer(modifier = Modifier.height(12.dp))
+
+        FeatureButtons { route ->
+            println("Clic en: $route") // Más adelante -> navegas con NavController
+        }
+        Spacer(modifier = Modifier.height(24.dp))
     }
 }
 

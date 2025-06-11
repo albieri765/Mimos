@@ -17,6 +17,10 @@ import com.example.mimos.screens.components.SectionDivider
 import com.example.mimos.screens.components.FeatureButtons
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import com.example.mimos.screens.components.FoodImageGrid
+import com.example.mimos.screens.components.FooterSection
+import com.example.mimos.screens.components.InfoSection
+import com.example.mimos.screens.components.SectionTitle
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -71,7 +75,20 @@ fun MainScreen() {
             println("Clic en: $route") // Más adelante -> navegas con NavController
         }
         Spacer(modifier = Modifier.height(24.dp))
-    }
-}
 
+        SectionTitle(title = "Comida para perros")
+
+        FoodImageGrid { productId ->
+            println("Clic en imagen: $productId")
+            // TODO: Aquí se podrá navegar a otra pantalla en el futuro
+        }
+        SectionTitle(title = "Sobre Nosotros")
+
+        InfoSection()
+        Spacer(modifier = Modifier.height(24.dp))
+        FooterSection()
+
+    }
+
+}
 

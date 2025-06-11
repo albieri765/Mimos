@@ -1,52 +1,33 @@
 package com.example.mimos.screens.components
 
-import com.google.accompanist.pager.*
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.mimos.R
 
-
-@OptIn(ExperimentalPagerApi::class)
 @Composable
-fun ProductPager() {
-    val pagerState = rememberPagerState()
+fun ProductPager(onImageClick: (Int) -> Unit) {
+    val pagerState = rememberPagerState(pageCount = { 3 })
+
     val images = listOf(
-        R.drawable.logo, // reemplaza con tus imágenes reales
-        R.drawable.logo,
-        R.drawable.logo
+        R.drawable.promoa,
+        R.drawable.promob,
+        R.drawable.promoc
     )
 
-    Column(
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(200.dp)
-    ) {
-        HorizontalPager(
-            count = images.size,
-            state = pagerState,
-            modifier = Modifier.fillMaxSize()
-        ) { page ->
-            Image(
-                painter = painterResource(id = images[page]),
-                contentDescription = "Banner $page",
-                modifier = Modifier.fillMaxSize()
-            )
-        }
-
-        HorizontalPagerIndicator(
-            pagerState = pagerState,
+    HorizontalPager(state = pagerState, modifier = Modifier.height(180.dp)) { page ->
+        Image(
+            painter = painterResource(id = images[page]),
+            contentDescription = "Banner $page",
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .padding(top = 8.dp)
+                .fillMaxWidth()
+                .clickable { onImageClick(page) }
         )
     }
 }

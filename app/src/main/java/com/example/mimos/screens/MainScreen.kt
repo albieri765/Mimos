@@ -1,5 +1,6 @@
 package com.example.mimos.screens
 
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -25,6 +26,11 @@ import com.example.mimos.screens.components.DrawerContent
 import com.example.mimos.screens.components.LoginDialog
 import com.example.mimos.screens.components.NotificationDrawerContent
 import kotlinx.coroutines.launch
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.NavHostController
+import com.example.mimos.screens.pages.Pagina1Screen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,6 +42,7 @@ fun MainScreen() {
     val scope = rememberCoroutineScope()
     var showNotifications by remember { mutableStateOf(false) }
     val notificationDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val navController = rememberNavController()
 
     ModalNavigationDrawer(
         drawerState = cartDrawerState,
@@ -53,26 +60,9 @@ fun MainScreen() {
                 )
             }
         }
-    ){
-    ModalNavigationDrawer(
-        drawerState = notificationDrawerState,
-        drawerContent = {
-            ModalDrawerSheet(
-                modifier = Modifier
-                    .fillMaxHeight()
-                    .background(Color(0xFFFFE0B2))
-                    .windowInsetsPadding(WindowInsets.statusBars)
-            ) {
-                NotificationDrawerContent(
-                    onClose = { scope.launch { notificationDrawerState.close() } },
-                    onItemClick = { println("Click en notificación: $it") }
-                )
-            }
-        }
     ) {
-        // Drawer lateral izquierdo (menú)
         ModalNavigationDrawer(
-            drawerState = drawerState,
+            drawerState = notificationDrawerState,
             drawerContent = {
                 ModalDrawerSheet(
                     modifier = Modifier
@@ -80,99 +70,155 @@ fun MainScreen() {
                         .background(Color(0xFFFFE0B2))
                         .windowInsetsPadding(WindowInsets.statusBars)
                 ) {
-                    DrawerContent(
-                        onNavigate = { route -> println("Navegar a: $route") },
-                        onCloseDrawer = { scope.launch { drawerState.close() } }
+                    NotificationDrawerContent(
+                        onClose = { scope.launch { notificationDrawerState.close() } },
+                        onItemClick = { println("Click en notificación: $it") }
                     )
                 }
             }
         ) {
-            if (showLoginDialog) {
-                LoginDialog(
-                    onDismiss = { showLoginDialog = false },
-                    onLoginClick = { email, password ->
-                        println("Iniciar sesión con: $email y $password")
-                        showLoginDialog = false
-                    },
-                    onForgotPassword = {
-                        println("Olvidaste tu contraseña")
-                    },
-                    onCreateAccount = {
-                        println("Crear nueva cuenta")
+            ModalNavigationDrawer(
+                drawerState = drawerState,
+                drawerContent = {
+                    ModalDrawerSheet(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .background(Color(0xFFFFE0B2))
+                            .windowInsetsPadding(WindowInsets.statusBars)
+                    ) {
+                        DrawerContent(
+                            onNavigate = { route -> println("Navegar a: $route") },
+                            onCloseDrawer = { scope.launch { drawerState.close() } }
+                        )
                     }
-                )
-            }
-            Scaffold(
-                topBar = {
-                    TopHeader(
-                        onMenuClick = { scope.launch { drawerState.open() } },
-                        onNotificationsClick = { scope.launch { notificationDrawerState.open() } },
-                        onUserClick = { showLoginDialog = true },
-                        onCartClick = { scope.launch { cartDrawerState.open() } },
-                        onHomeClick = {
-                            scope.launch {
-                                scrollState.animateScrollTo(0)
-                            }
+                }
+            ) {
+                if (showLoginDialog) {
+                    LoginDialog(
+                        onDismiss = { showLoginDialog = false },
+                        onLoginClick = { email, password ->
+                            println("Iniciar sesión con: $email y $password")
+                            showLoginDialog = false
+                        },
+                        onForgotPassword = {
+                            println("Olvidaste tu contraseña")
+                        },
+                        onCreateAccount = {
+                            println("Crear nueva cuenta")
                         }
                     )
                 }
-            ) { innerPadding ->
-                Column(
-                    modifier = Modifier
-                        .padding(innerPadding)
-                        .fillMaxSize()
-                        .background(Color.White)
-                        .verticalScroll(scrollState)
-                        .padding(16.dp)
-                ) {
-                    if (showNotifications) {
-                        Spacer(modifier = Modifier.height(16.dp))
+
+                Scaffold(
+                    topBar = {
+                        TopHeader(
+                            onMenuClick = { scope.launch { drawerState.open() } },
+                            onNotificationsClick = { scope.launch { notificationDrawerState.open() } },
+                            onUserClick = { showLoginDialog = true },
+                            onCartClick = { scope.launch { cartDrawerState.open() } },
+                            onHomeClick = {
+                                navController.navigate("home") {
+                                    popUpTo("home") { inclusive = true } // Limpia la pila y evita múltiples copias
+                                }
+                                scope.launch {
+                                    scrollState.animateScrollTo(0)
+                                }
+                            }
+                        )
                     }
+                ) { innerPadding ->
 
-                    SearchBar()
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Text(
-                        text = "¡Encuentra todo lo que tu mascota necesita!",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 16.dp)
-                            .wrapContentWidth(Alignment.CenterHorizontally)
-                    )
-
-                    Spacer(modifier = Modifier.height(24.dp))
-                    ProductPager()
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Text(
-                        text = "Lo que necesita tu perrito:",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp, top = 8.dp)
-                            .wrapContentWidth(Alignment.CenterHorizontally)
-                    )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-                    CategoryCarousel { println("Categoría seleccionada: $it") }
-
-                    Spacer(modifier = Modifier.height(24.dp))
-                    SectionDivider(text = "Explora más opciones")
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    FeatureButtons { println("Clic en: $it") }
-
-                    Spacer(modifier = Modifier.height(24.dp))
-                    SectionTitle(title = "Comida para perros")
-                    FoodImageGrid { println("Clic en imagen: $it") }
-
-                    SectionTitle(title = "Sobre Nosotros")
-                    InfoSection()
-
-                    Spacer(modifier = Modifier.height(24.dp))
-                    FooterSection()
+                    NavHost(
+                        navController = navController,
+                        startDestination = "home",
+                        modifier = Modifier.padding(innerPadding)
+                    ) {
+                        composable("home") {
+                            HomeContent(
+                                scrollState = scrollState,
+                                navController = navController,
+                                onImageClick = { index ->
+                                    val route = when (index) {
+                                        0 -> "pagina1"
+                                        1 -> "pagina2"
+                                        2 -> "pagina3"
+                                        else -> "pagina1"
+                                    }
+                                    navController.navigate(route)
+                                }
+                            )
+                        }
+                        composable("pagina1") { Pagina1Screen(titulo = "Página 1") }
+                        composable("pagina2") { Pagina1Screen(titulo = "Página 2") }
+                        composable("pagina3") { Pagina1Screen(titulo = "Página 3") }
+                    }
                 }
             }
         }
-    }}}
+    }
+}
+
+@Composable
+fun HomeContent(scrollState: ScrollState, navController: NavHostController,onImageClick: (Int) -> Unit) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.White)
+            .verticalScroll(scrollState)
+            .padding(16.dp)
+    ) {
+        SearchBar()
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Text(
+            text = "¡Encuentra todo lo que tu mascota necesita!",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 16.dp)
+                .wrapContentWidth(Alignment.CenterHorizontally)
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+        ProductPager(onImageClick = onImageClick)
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Text(
+            text = "Lo que necesita tu perrito:",
+            style = MaterialTheme.typography.titleMedium,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 16.dp, top = 8.dp)
+                .wrapContentWidth(Alignment.CenterHorizontally)
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+        CategoryCarousel { println("Categoría seleccionada: $it") }
+
+        Spacer(modifier = Modifier.height(24.dp))
+        SectionDivider(text = "Explora más opciones")
+        Spacer(modifier = Modifier.height(12.dp))
+
+        FeatureButtons { println("Clic en: $it") }
+
+        Spacer(modifier = Modifier.height(24.dp))
+        SectionTitle(title = "Comida para perros")
+        FoodImageGrid { println("Clic en imagen: $it") }
+
+        SectionTitle(title = "Sobre Nosotros")
+        InfoSection()
+
+        Spacer(modifier = Modifier.height(24.dp))
+        FooterSection()
+    }
+}
+
+@Composable
+fun PaginaDetalle(titulo: String) {
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
+        Text(text = titulo, style = MaterialTheme.typography.headlineSmall)
+    }
+}

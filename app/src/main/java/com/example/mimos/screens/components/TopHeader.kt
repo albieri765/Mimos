@@ -17,23 +17,29 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.mimos.R
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
+
 
 @Composable
-fun TopHeader() {
+fun TopHeader(onMenuClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(0xFFFF9900)) // Fondo naranja
+            .background(Color(0xFFFF9900))
+            .windowInsetsPadding(WindowInsets.statusBars) // 👈 Esto respeta el espacio del status bar
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        IconButton(onClick = { /* Abrir menú */ }) {
-            Icon(imageVector = Icons.Default.Menu, contentDescription = "Menú", tint = Color.White)
+    )
+    {
+        IconButton(onClick = onMenuClick) {
+            Icon(Icons.Default.Menu, contentDescription = "Menú", tint = Color.White)
         }
 
         Image(
-            painter = painterResource(id = R.drawable.logo),// ← reemplázalo con tu logo
+            painter = painterResource(id = R.drawable.logo),
             contentDescription = "Logo",
             modifier = Modifier
                 .height(36.dp)
@@ -42,13 +48,13 @@ fun TopHeader() {
 
         Row {
             IconButton(onClick = { /* Notificaciones */ }) {
-                Icon(imageVector = Icons.Default.Notifications, contentDescription = "Notificaciones", tint = Color.White)
+                Icon(Icons.Default.Notifications, contentDescription = "Notificaciones", tint = Color.White)
             }
             IconButton(onClick = { /* Carrito */ }) {
-                Icon(imageVector = Icons.Default.ShoppingCart, contentDescription = "Carrito", tint = Color.White)
+                Icon(Icons.Default.ShoppingCart, contentDescription = "Carrito", tint = Color.White)
             }
             IconButton(onClick = { /* Usuario */ }) {
-                Icon(imageVector = Icons.Default.Person, contentDescription = "Usuario", tint = Color.White)
+                Icon(Icons.Default.Person, contentDescription = "Usuario", tint = Color.White)
             }
         }
     }

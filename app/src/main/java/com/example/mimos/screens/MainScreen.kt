@@ -16,6 +16,7 @@ import com.example.mimos.screens.components.SectionDivider
 import com.example.mimos.screens.components.FeatureButtons
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import com.example.mimos.screens.components.CartDrawerContent
 import com.example.mimos.screens.components.FoodImageGrid
 import com.example.mimos.screens.components.FooterSection
 import com.example.mimos.screens.components.InfoSection
@@ -29,12 +30,30 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainScreen() {
     var showLoginDialog by remember { mutableStateOf(false) }
+    val cartDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scrollState = rememberScrollState()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     var showNotifications by remember { mutableStateOf(false) }
     val notificationDrawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
+    ModalNavigationDrawer(
+        drawerState = cartDrawerState,
+        drawerContent = {
+            ModalDrawerSheet(
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .background(Color(0xFFFFE0B2))
+                    .windowInsetsPadding(WindowInsets.statusBars)
+            ) {
+                CartDrawerContent(
+                    onClose = { scope.launch { cartDrawerState.close() } },
+                    onViewCart = { println("Ir a ver carrito") },
+                    onPay = { println("Pagar") }
+                )
+            }
+        }
+    ){
     ModalNavigationDrawer(
         drawerState = notificationDrawerState,
         drawerContent = {
@@ -88,7 +107,13 @@ fun MainScreen() {
                     TopHeader(
                         onMenuClick = { scope.launch { drawerState.open() } },
                         onNotificationsClick = { scope.launch { notificationDrawerState.open() } },
-                        onUserClick = { showLoginDialog = true }
+                        onUserClick = { showLoginDialog = true },
+                        onCartClick = { scope.launch { cartDrawerState.open() } },
+                        onHomeClick = {
+                            scope.launch {
+                                scrollState.animateScrollTo(0)
+                            }
+                        }
                     )
                 }
             ) { innerPadding ->
@@ -150,4 +175,4 @@ fun MainScreen() {
                 }
             }
         }
-    }}
+    }}}

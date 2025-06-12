@@ -1,46 +1,60 @@
 package com.example.mimos.screens.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.ExpandLess
+import androidx.compose.material.icons.filled.ExpandMore
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.mimos.R
-import androidx.compose.material.icons.filled.ExpandLess
-import androidx.compose.material.icons.filled.ExpandMore
 
+data class DrawerButtonItem(val label: String, val route: String)
 
 @Composable
 fun DrawerContent(
     onNavigate: (String) -> Unit,
     onCloseDrawer: () -> Unit
 ) {
-    LazyColumn(modifier = Modifier.fillMaxSize().padding(16.dp)) {
+    LazyColumn(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         item {
             DrawerItemWithSubOptions(
                 title = "Descuentos",
-                subItems = listOf("Promociones y Descuento", "Ofertas del mes"),
-                onItemClick = onNavigate
+                subItems = mapOf(
+                    "promociones" to "Promociones y Descuento",
+                    "ofertas" to "Ofertas del mes"
+                ),
+                onItemClick = onNavigate,
+                onCloseDrawer = onCloseDrawer
             )
 
             DrawerItemWithSubOptions(
                 title = "Farmacia",
-                subItems = listOf("Veterinarios a la orden", "Farmacia para perritos"),
-                onItemClick = onNavigate
+                subItems = mapOf(
+                    "veterinarios" to "Veterinarios a la orden",
+                    "farmacia" to "Farmacia para perritos"
+                ),
+                onItemClick = onNavigate,
+                onCloseDrawer = onCloseDrawer
             )
 
             DrawerExpandableGridItem(
                 title = "Cuidados",
-                items = listOf("Cachorro", "Adulto", "Senior"),
-                onItemClick = onNavigate
+                items = listOf(
+                    DrawerButtonItem("Cachorro", "cachorro"),
+                    DrawerButtonItem("Adulto", "adulto"),
+                    DrawerButtonItem("Senior", "senior")
+                ),
+                onItemClick = onNavigate,
+                onCloseDrawer = onCloseDrawer
             )
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -49,7 +63,10 @@ fun DrawerContent(
                 text = "Blog",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { onNavigate("blog") }
+                    .clickable {
+                        onCloseDrawer()
+                        onNavigate("blog")
+                    }
                     .padding(vertical = 12.dp),
                 style = MaterialTheme.typography.titleMedium
             )
@@ -60,8 +77,9 @@ fun DrawerContent(
 @Composable
 fun DrawerItemWithSubOptions(
     title: String,
-    subItems: List<String>,
-    onItemClick: (String) -> Unit
+    subItems: Map<String, String>,
+    onItemClick: (String) -> Unit,
+    onCloseDrawer: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
@@ -85,12 +103,15 @@ fun DrawerItemWithSubOptions(
         }
 
         if (expanded) {
-            subItems.forEach { item ->
+            subItems.forEach { (route, label) ->
                 Text(
-                    text = item,
+                    text = label,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { onItemClick(item) }
+                        .clickable {
+                            onCloseDrawer()
+                            onItemClick(route)
+                        }
                         .padding(start = 16.dp, top = 8.dp, bottom = 8.dp),
                     style = MaterialTheme.typography.bodyLarge,
                     color = Color.Gray
@@ -103,12 +124,13 @@ fun DrawerItemWithSubOptions(
 @Composable
 fun DrawerExpandableGridItem(
     title: String,
-    items: List<String>,
-    onItemClick: (String) -> Unit
+    items: List<DrawerButtonItem>,
+    onItemClick: (String) -> Unit,
+    onCloseDrawer: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Column {
+    Column(modifier = Modifier.fillMaxWidth()) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -129,16 +151,22 @@ fun DrawerExpandableGridItem(
 
         if (expanded) {
             items.chunked(2).forEach { rowItems ->
-                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    rowItems.forEach { label ->
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    rowItems.forEach { item ->
                         Button(
-                            onClick = { onItemClick(label) },
-                            modifier = Modifier
-                                .weight(1f)
-                                .padding(vertical = 4.dp),
+                            onClick = {
+                                onCloseDrawer()
+                                onItemClick(item.route)
+                            },
+                            modifier = Modifier.weight(1f),
                             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFFCC80))
                         ) {
-                            Text(text = label)
+                            Text(text = item.label)
                         }
                     }
                 }

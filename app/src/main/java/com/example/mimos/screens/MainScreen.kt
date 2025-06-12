@@ -31,9 +31,17 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mimos.screens.pages.BlogScreen
+import com.example.mimos.screens.pages.CuidadosAdultoScreen
+import com.example.mimos.screens.pages.CuidadosCachorroScreen
+import com.example.mimos.screens.pages.CuidadosSeniorScreen
+import com.example.mimos.screens.pages.FarmaciaScreen
+import com.example.mimos.screens.pages.OfertasScreen
 import com.example.mimos.screens.pages.Pagina1Screen
 import com.example.mimos.screens.pages.Pagina2Screen
 import com.example.mimos.screens.pages.Pagina3Screen
+import com.example.mimos.screens.pages.PromocionesScreen
+import com.example.mimos.screens.pages.VeterinariosScreen
 import com.example.mimos.view.ProductoViewModel
 
 
@@ -160,23 +168,30 @@ fun MainScreen() {
                         composable("pagina1") {
                             Pagina1Screen(navController = navController, viewModel = productoViewModel)
                         }
-                        // ✅ Agregar la ruta carrito
-                        composable("carrito") {
-                            PaginaDetalle(titulo = "Carrito")
-                        }
-                        // Opcionalmente otras páginas
                         composable("pagina2") {
-                            PaginaDetalle(titulo = "Página 2")
+                            Pagina2Screen(navController = navController, viewModel = productoViewModel)
                         }
                         composable("pagina3") {
-                            PaginaDetalle(titulo = "Página 3")
+                            Pagina3Screen(navController = navController, viewModel = productoViewModel)
                         }
+                        composable("carrito") {
+                            PaginaDetalle(titulo = "Carrito")}
+
+                        composable("promociones") { PromocionesScreen(navController) }
+                            composable("ofertas") { OfertasScreen(navController) }
+                            composable("veterinarios") { VeterinariosScreen(navController) }
+                            composable("farmacia") { FarmaciaScreen(navController) }
+                        composable("cachorro") { CuidadosCachorroScreen(navController) }
+                        composable("adulto") { CuidadosAdultoScreen(navController) }
+                        composable("senior") { CuidadosSeniorScreen(navController) }
+                        composable("blog") { BlogScreen(navController) }
                     }
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun HomeContent(scrollState: ScrollState, navController: NavHostController,onImageClick: (Int) -> Unit) {
@@ -236,9 +251,11 @@ fun HomeContent(scrollState: ScrollState, navController: NavHostController,onIma
 
 @Composable
 fun PaginaDetalle(titulo: String) {
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .padding(16.dp)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp)
+    ) {
         Text(text = titulo, style = MaterialTheme.typography.headlineSmall)
     }
 }

@@ -27,6 +27,9 @@ fun Pagina1Screen(navController: NavController, viewModel: ProductoViewModel = v
     val productos by viewModel.productos.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    LaunchedEffect(Unit) {
+        viewModel.obtenerProductosPorPagina("pagina1")
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(

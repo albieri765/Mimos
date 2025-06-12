@@ -2,71 +2,139 @@ package com.example.mimos.screens.pages
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import coil.compose.AsyncImage
 import com.example.mimos.R
 import com.example.mimos.data.ProductoModel
 import com.example.mimos.screens.components.SearchBar
 import com.example.mimos.screens.components.FooterSection
+import com.example.mimos.view.ProductoViewModel
+import kotlinx.coroutines.launch
 
 @Composable
-fun Pagina3Screen(titulo: String,productos: List<ProductoModel>, total: Int) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Top
-    ) {
-        // Barra de búsqueda
-        SearchBar()
+fun Pagina3Screen(navController: NavController, viewModel: ProductoViewModel = viewModel()) {
+    val productos by viewModel.productos.collectAsState()
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
-        Spacer(modifier = Modifier.height(16.dp))
+    // ✅ Cargar productos del orden 1 al 10 solo al entrar a esta pantalla
+    LaunchedEffect(Unit) {
+        viewModel.obtenerProductosPorPagina("pagina3")
+        }
 
-        // Frase o título principal
-        Text(
-            text = "¡Explora lo mejor para tu mascota!",
-            fontSize = 20.sp,
-            color = MaterialTheme.colorScheme.primary
-        )
-
-        Spacer(modifier = Modifier.height(16.dp))
-
-        // Imagen (la misma del ViewPager, pero sin clic)
-        Image(
-            painter = painterResource(R.drawable.promoc), // cambia a la imagen real que usas
-            contentDescription = "Imagen ilustrativa",
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(200.dp)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            SearchBar()
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Text(
+                text = "¡Explora lo mejor para tu mascota!",
+                fontSize = 20.sp,
+                color = MaterialTheme.colorScheme.primary
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Image(
+                painter = painterResource(id = R.drawable.promoa),
+                contentDescription = "Promo",
+                modifier = Modifier
+                    .height(200.dp)
+                    .fillMaxWidth()
+            )
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Text(
+                text = "Hay ${productos.size} productos",
+                fontSize = 16.sp,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+
+            productos.forEach { producto ->
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        val imagenUrlModificada = if (!producto.imagen.isNullOrBlank()) {
+                            producto.imagen.replace("127.0.0.1", "10.0.2.2")
+                        } else {
+                            "https://via.placeholder.com/150"
+                        }
+
+                        AsyncImage(
+                            model = imagenUrlModificada,
+                            contentDescription = producto.nombre,
+                            modifier = Modifier.size(150.dp)
+                        )
+
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(text = producto.nombre, fontSize = 16.sp)
+                            Text(text = "Precio: \$${producto.precio}", fontSize = 14.sp)
+                            Text(text = "Peso: ${producto.peso}", fontSize = 14.sp)
+                            Text(text = "Marca: ${producto.marca}", fontSize = 14.sp)
+                        }
+
+                        IconButton(onClick = {
+                            scope.launch {
+                                val result = snackbarHostState.showSnackbar(
+                                    message = "${producto.nombre} se añadió al carrito",
+                                    actionLabel = "VER CARRITO"
+                                )
+                                if (result == SnackbarResult.ActionPerformed) {
+                                    navController.navigate("carrito")
+                                }
+                            }
+                        }) {
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_cart),
+                                contentDescription = "Añadir al carrito",
+                                modifier = Modifier.size(24.dp)
+                            )
+                        }
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+            FooterSection()
+        }
+
+        SnackbarHost(
+            hostState = snackbarHostState,
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 16.dp)
         )
-
-        Spacer(modifier = Modifier.height(24.dp))
-
-        // Segundo título
-        Text(
-            text = "Beneficios destacados",
-            fontSize = 18.sp,
-            color = MaterialTheme.colorScheme.secondary
-        )
-
-        Spacer(modifier = Modifier.height(12.dp))
-
-        // Texto explicativo
-        Text(
-            text = "Aquí puedes describir por qué esta sección es útil, interesante o relevante para los dueños de mascotas.",
-            fontSize = 16.sp,
-            lineHeight = 22.sp
-        )
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        // Íconos sociales al final
-        FooterSection()
     }
 }

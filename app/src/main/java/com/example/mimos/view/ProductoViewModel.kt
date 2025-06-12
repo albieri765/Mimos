@@ -14,18 +14,25 @@ class ProductoViewModel : ViewModel() {
     private val _productos = MutableStateFlow<List<ProductoModel>>(emptyList())
     val productos: StateFlow<List<ProductoModel>> = _productos
 
-    init {
-        obtenerProductos()
-    }
-
-    private fun obtenerProductos() {
+    // ✅ Cargar productos según la página (2 productos por página basados en el orden)
+    fun obtenerProductosPorPagina(pagina: String) {
         viewModelScope.launch {
             try {
                 val response = RetrofitInstance.api.getProductos()
                 Log.d("PRODUCTO_API", "Productos recibidos: $response")
-                _productos.value = response
+
+                val (inicio, fin) = when (pagina) {
+                    "pagina1" -> 1 to 2
+                    "pagina2" -> 3 to 4
+                    "pagina3" -> 5 to 6
+                    else -> 1 to 2
+                }
+
+                val filtrados = response.filter { it.orden in inicio..fin }
+                _productos.value = filtrados
+
             } catch (e: Exception) {
-                Log.e("PRODUCTO_API", "Error al obtener productos", e)
+                Log.e("PRODUCTO_API", "Error al obtener productos para $pagina", e)
             }
         }
     }

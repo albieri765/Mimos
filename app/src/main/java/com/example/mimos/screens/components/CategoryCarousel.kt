@@ -14,11 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 
 @Composable
-fun CategoryCarousel(
-    onCategoryClick: (String) -> Unit // Esto permitirá manejar el click más adelante
-) {
+fun CategoryCarousel(navController: NavController) {
     val categories = listOf("Juguetes", "Comida", "Ropa", "Camas", "Accesorios")
 
     LazyRow(
@@ -33,7 +32,17 @@ fun CategoryCarousel(
                 modifier = Modifier
                     .width(120.dp)
                     .height(100.dp)
-                    .clickable { onCategoryClick(category) }
+                    .clickable {
+                        val route = when (category.lowercase()) {
+                            "juguetes" -> "categoria/juguetes"
+                            "comida" -> "categoria/comida"
+                            "ropa" -> "categoria/ropa"
+                            "camas" -> "categoria/camas"
+                            "accesorios" -> "categoria/accesorios"
+                            else -> "home"
+                        }
+                        navController.navigate(route)
+                    }
                     .background(
                         color = Color(0xFFF5F5F5),
                         shape = RoundedCornerShape(16.dp)

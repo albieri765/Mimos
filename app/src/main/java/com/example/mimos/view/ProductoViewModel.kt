@@ -35,5 +35,4 @@ class ProductoViewModel : ViewModel() {
                 Log.e("PRODUCTO_API", "Error al obtener productos para $pagina", e)
             }
         }
-    }
-}
+    }}

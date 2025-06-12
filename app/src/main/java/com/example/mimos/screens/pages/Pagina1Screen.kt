@@ -98,6 +98,8 @@ fun Pagina1Screen(navController: NavController, viewModel: ProductoViewModel = v
                             Text(text = "Precio: \$${producto.precio}", fontSize = 14.sp)
                             Text(text = "Peso: ${producto.peso}", fontSize = 14.sp)
                             Text(text = "Marca: ${producto.marca}", fontSize = 14.sp)
+                            Text(text = "Categoría: ${producto.categoria.nombre}", fontSize = 14.sp)
+
                         }
 
                         IconButton(onClick = {

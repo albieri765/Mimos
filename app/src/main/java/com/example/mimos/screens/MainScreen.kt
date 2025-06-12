@@ -31,6 +31,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.mimos.screens.carrusel.accesorios
+import com.example.mimos.screens.carrusel.cama
+import com.example.mimos.screens.carrusel.comida
+import com.example.mimos.screens.carrusel.juguetesScreen
+import com.example.mimos.screens.carrusel.ropa
 import com.example.mimos.screens.pages.BlogScreen
 import com.example.mimos.screens.pages.CuidadosAdultoScreen
 import com.example.mimos.screens.pages.CuidadosCachorroScreen
@@ -185,6 +190,11 @@ fun MainScreen() {
                         composable("adulto") { CuidadosAdultoScreen(navController) }
                         composable("senior") { CuidadosSeniorScreen(navController) }
                         composable("blog") { BlogScreen(navController) }
+                        composable("categoria/juguetes") { juguetesScreen("Juguetes") }
+                        composable("categoria/comida") { comida("Comida") }
+                        composable("categoria/ropa") { ropa("Ropa") }
+                        composable("categoria/camas") { cama("Camas") }
+                        composable("categoria/accesorios") { accesorios("Accesorios") }
                     }
                 }
             }
@@ -229,7 +239,7 @@ fun HomeContent(scrollState: ScrollState, navController: NavHostController,onIma
         )
 
         Spacer(modifier = Modifier.height(8.dp))
-        CategoryCarousel { println("Categoría seleccionada: $it") }
+        CategoryCarousel(navController)
 
         Spacer(modifier = Modifier.height(24.dp))
         SectionDivider(text = "Explora más opciones")

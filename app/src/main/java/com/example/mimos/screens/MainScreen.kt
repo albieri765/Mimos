@@ -37,11 +37,13 @@ import com.example.mimos.screens.pages.CuidadosAdultoScreen
 import com.example.mimos.screens.pages.CuidadosCachorroScreen
 import com.example.mimos.screens.pages.CuidadosSeniorScreen
 import com.example.mimos.screens.pages.FarmaciaScreen
+import com.example.mimos.screens.pages.InfoAccesoriosScreen
 import com.example.mimos.screens.pages.OfertasScreen
 import com.example.mimos.screens.pages.Pagina1Screen
 import com.example.mimos.screens.pages.Pagina2Screen
 import com.example.mimos.screens.pages.Pagina3Screen
 import com.example.mimos.screens.pages.PromocionesScreen
+import com.example.mimos.screens.pages.RecomendacionesComidaScreen
 import com.example.mimos.screens.pages.VeterinariosScreen
 import com.example.mimos.view.ProductoViewModel
 
@@ -192,7 +194,12 @@ fun MainScreen() {
                         composable("categoria/{nombreCategoria}") { backStackEntry ->
                             val nombreCategoria = backStackEntry.arguments?.getString("nombreCategoria") ?: ""
                             CategoriaProductosScreen(nombreCategoria = nombreCategoria, navController = navController, viewModel = productoViewModel)
+
                         }
+
+                        composable("recomendaciones_comida") { RecomendacionesComidaScreen(navController) }
+                        composable("accesorios_info")        { InfoAccesoriosScreen(navController) }
+
 
                     }
                 }
@@ -268,7 +275,13 @@ fun HomeContent(
         SectionDivider(text = "Explora más opciones")
         Spacer(modifier = Modifier.height(12.dp))
 
-        FeatureButtons { println("Clic en: $it") }
+        FeatureButtons { destino ->
+            when (destino) {
+                "veterinario" -> navController.navigate("veterinarios")
+                "comida"      -> navController.navigate("recomendaciones_comida")
+                "accesorios"  -> navController.navigate("accesorios_info")
+            }
+        }
 
         Spacer(modifier = Modifier.height(24.dp))
         SectionTitle(title = "Comida para perros")

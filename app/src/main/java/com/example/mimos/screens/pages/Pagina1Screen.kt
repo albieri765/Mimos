@@ -92,11 +92,12 @@ fun Pagina1Screen(navController: NavController, viewModel: ProductoViewModel = v
                         } else {
                             ""
                         }
-
                         AsyncImage(
                             model = imagenUrlModificada,
                             contentDescription = producto.nombre,
-                            modifier = Modifier.size(150.dp)
+                            modifier = Modifier
+                                .size(120.dp)          // un poco más pequeño si quieres
+                                .padding(end = 12.dp)  // ← separa la imagen del texto
                         )
 
                         Column(modifier = Modifier.weight(1f)) {

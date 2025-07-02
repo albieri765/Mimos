@@ -33,9 +33,9 @@ fun Pagina3Screen(navController: NavController, viewModel: ProductoViewModel = v
     val scope = rememberCoroutineScope()
 
     // ✅ Cargar productos del orden 1 al 10 solo al entrar a esta pantalla
-    LaunchedEffect(Unit) {
+    LaunchedEffect(key1 = "pagina3") {
         viewModel.obtenerProductosPorPagina("pagina3")
-        }
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(

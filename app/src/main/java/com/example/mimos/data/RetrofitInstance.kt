@@ -7,7 +7,7 @@ object RetrofitInstance {
     private const val BASE_URL = "http://10.0.2.2:8000/" // localhost para emulador Android
 
     val retrofit = Retrofit.Builder()
-        .baseUrl(BASE_URL)
+        .baseUrl("http://10.0.2.2:8000/api/")
         .addConverterFactory(GsonConverterFactory.create())
         .build()
 

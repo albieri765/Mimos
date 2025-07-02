@@ -31,11 +31,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.mimos.screens.carrusel.accesorios
-import com.example.mimos.screens.carrusel.cama
-import com.example.mimos.screens.carrusel.comida
-import com.example.mimos.screens.carrusel.juguetesScreen
-import com.example.mimos.screens.carrusel.ropa
+import com.example.mimos.screens.carrusel.CategoriaProductosScreen
 import com.example.mimos.screens.pages.BlogScreen
 import com.example.mimos.screens.pages.CuidadosAdultoScreen
 import com.example.mimos.screens.pages.CuidadosCachorroScreen
@@ -131,6 +127,9 @@ fun MainScreen() {
                         }
                     )
                 }
+                LaunchedEffect(Unit) {
+                    productoViewModel.obtenerTodosLosProductos()
+                }
 
                 Scaffold(
                     topBar = {
@@ -190,11 +189,11 @@ fun MainScreen() {
                         composable("adulto") { CuidadosAdultoScreen(navController) }
                         composable("senior") { CuidadosSeniorScreen(navController) }
                         composable("blog") { BlogScreen(navController) }
-                        composable("categoria/juguetes") { juguetesScreen("Juguetes") }
-                        composable("categoria/comida") { comida("Comida") }
-                        composable("categoria/ropa") { ropa("Ropa") }
-                        composable("categoria/camas") { cama("Camas") }
-                        composable("categoria/accesorios") { accesorios("Accesorios") }
+                        composable("categoria/{nombreCategoria}") { backStackEntry ->
+                            val nombreCategoria = backStackEntry.arguments?.getString("nombreCategoria") ?: ""
+                            CategoriaProductosScreen(nombreCategoria = nombreCategoria, navController = navController, viewModel = productoViewModel)
+                        }
+
                     }
                 }
             }

@@ -7,22 +7,19 @@ import com.example.mimos.data.ProductoModel
 import com.example.mimos.data.RetrofitInstance
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 
 class ProductoViewModel : ViewModel() {
 
     /* ---------- BÚSQUEDA ---------- */
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
-    fun setSearchQuery(newQuery: String) { _searchQuery.value = newQuery }
+    fun setSearchQuery(q: String) { _searchQuery.value = q }
 
-    /* ---------- LISTA PRINCIPAL ---------- */
+    /* ---------- PRODUCTOS ---------- */
     private val _productos = MutableStateFlow<List<ProductoModel>>(emptyList())
-    val productos: StateFlow<List<ProductoModel>> = _productos
+    val   productos: StateFlow<List<ProductoModel>> = _productos
 
-    /* ---------- FILTRADO EN VIVO ---------- */
+    /* Filtrado reactivo por búsqueda */
     val productosFiltrados: StateFlow<List<ProductoModel>> =
         _searchQuery
             .debounce(300)
@@ -30,45 +27,48 @@ class ProductoViewModel : ViewModel() {
                 if (query.isBlank()) list
                 else list.filter {
                     it.nombre.contains(query, true) ||
-                            it.marca.contains(query, true)  ||
+                            it.marca.contains(query, true) ||
                             it.categoria.nombre.contains(query, true)
                 }
             }
-            .stateIn(
-                scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
-                initialValue = emptyList()
-            )
+            .stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
 
     /* ---------- CARRITO ---------- */
     private val _carrito = MutableStateFlow<List<ProductoModel>>(emptyList())
     val carrito: StateFlow<List<ProductoModel>> = _carrito
 
-    fun agregarAlCarrito(producto: ProductoModel) {
-        _carrito.value = _carrito.value + producto         // añade (puedes evitar duplicados si lo deseas)
+    /** Cantidades por ID para mostrar en la UI */
+    val cantidades: StateFlow<Map<Int, Int>> = carrito
+        .map { list -> list.groupingBy { it.id }.eachCount() }
+        .stateIn(viewModelScope, SharingStarted.Eagerly, emptyMap())
+
+    fun agregarAlCarrito(prod: ProductoModel) {
+        _carrito.value = _carrito.value + prod
     }
 
-    fun quitarDelCarrito(producto: ProductoModel) {
-        _carrito.value = _carrito.value - producto
+    /** Quita una unidad (si existe) */
+    fun quitarDelCarrito(prod: ProductoModel) {
+        val mutable = _carrito.value.toMutableList()
+        val idx = mutable.indexOfFirst { it.id == prod.id }
+        if (idx != -1) mutable.removeAt(idx)   // quita sólo una unidad
+        _carrito.value = mutable
     }
+
+    fun limpiarCarrito() { _carrito.value = emptyList() }
 
     val totalCarrito: StateFlow<Double> = carrito
-        .map { list -> list.sumOf { it.precio.toDoubleOrNull() ?: 0.0 } }
+        .map { it.sumOf { p -> p.precio.toDoubleOrNull() ?: 0.0 } }
         .stateIn(viewModelScope, SharingStarted.Eagerly, 0.0)
 
-    /* ---------- LISTA POR CATEGORÍA (ya existente) ---------- */
+    /* ---------- CARGA REMOTA ---------- */
     private val _productosPorCategoria = MutableStateFlow<List<ProductoModel>>(emptyList())
-    val productosPorCategoria: StateFlow<List<ProductoModel>> = _productosPorCategoria
+    val   productosPorCategoria: StateFlow<List<ProductoModel>> = _productosPorCategoria
 
-    /* ---------- MÉTODOS DE CARGA ---------- */
     fun obtenerTodosLosProductos() {
         if (_productos.value.isNotEmpty()) return
         viewModelScope.launch {
-            try {
-                _productos.value = RetrofitInstance.api.getProductos()
-            } catch (e: Exception) {
-                Log.e("PRODUCTO_API", "Error al obtener todos los productos", e)
-            }
+            try { _productos.value = RetrofitInstance.api.getProductos() }
+            catch (e: Exception) { Log.e("PRODUCTO_API", "Todos", e) }
         }
     }
 
@@ -76,28 +76,28 @@ class ProductoViewModel : ViewModel() {
         viewModelScope.launch {
             _productos.value = emptyList()
             try {
-                val response = RetrofitInstance.api.getProductos()
-                val (inicio, fin) = when (pagina) {
+                val r = RetrofitInstance.api.getProductos()
+                val (ini, fin) = when (pagina) {
                     "pagina1" -> 1 to 2
                     "pagina2" -> 3 to 4
                     "pagina3" -> 5 to 6
                     else      -> 1 to 2
                 }
-                _productos.value = response.filter { it.orden in inicio..fin }
+                _productos.value = r.filter { it.orden in ini..fin }
             } catch (e: Exception) {
-                Log.e("PRODUCTO_API", "Error al obtener productos para $pagina", e)
+                Log.e("PRODUCTO_API", "Página $pagina", e)
             }
         }
     }
 
-    fun obtenerProductosPorCategoria(nombreCategoria: String) {
+    fun obtenerProductosPorCategoria(nombre: String) {
         viewModelScope.launch {
             _productosPorCategoria.value = emptyList()
             try {
                 _productosPorCategoria.value =
-                    RetrofitInstance.api.getProductosPorCategoria(nombreCategoria)
+                    RetrofitInstance.api.getProductosPorCategoria(nombre)
             } catch (e: Exception) {
-                Log.e("PRODUCTO_API", "Error categoría $nombreCategoria", e)
+                Log.e("PRODUCTO_API", "Categoría $nombre", e)
             }
         }
     }

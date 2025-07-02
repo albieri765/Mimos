@@ -27,7 +27,7 @@ import com.example.mimos.view.ProductoViewModel
 import kotlinx.coroutines.launch
 
 @Composable
-fun Pagina3Screen(navController: NavController, viewModel: ProductoViewModel = viewModel()) {
+fun Pagina3Screen(navController: NavController, viewModel: ProductoViewModel) {
     val productos  by viewModel.productosFiltrados.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
@@ -113,22 +113,23 @@ fun Pagina3Screen(navController: NavController, viewModel: ProductoViewModel = v
                         }
 
                         IconButton(onClick = {
+                            viewModel.agregarAlCarrito(producto)          // ① añade al carrito
                             scope.launch {
-                                val result = snackbarHostState.showSnackbar(
+                                val res = snackbarHostState.showSnackbar( // ② muestra Snackbar
                                     message = "${producto.nombre} se añadió al carrito",
                                     actionLabel = "VER CARRITO"
                                 )
-                                if (result == SnackbarResult.ActionPerformed) {
-                                    navController.navigate("carrito")
+                                if (res == SnackbarResult.ActionPerformed) {
+                                    navController.navigate("carrito")     // ③ navega si el usuario pulsa
                                 }
                             }
                         }) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_cart),
-                                contentDescription = "Añadir al carrito",
-                                modifier = Modifier.size(24.dp)
+                            Icon(
+                                painter = painterResource(R.drawable.ic_cart),
+                                contentDescription = "Añadir al carrito"
                             )
                         }
+
                     }
                 }
             }

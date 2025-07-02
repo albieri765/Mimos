@@ -75,9 +75,13 @@ fun MainScreen() {
                     .background(Color(0xFFFFE0B2))
                     .windowInsetsPadding(WindowInsets.statusBars)
             ) {
-                CartDrawerContent(
+                CartDrawerContent(                 // ← añade el ViewModel aquí
+                    viewModel = productoViewModel,
                     onClose = { scope.launch { cartDrawerState.close() } },
-                    onViewCart = { navController.navigate("carrito") },
+                    onViewCart = {
+                        navController.navigate("carrito")
+                        scope.launch { cartDrawerState.close() }
+                    },
                     onPay = { println("Pagar") }
                 )
             }

@@ -24,11 +24,14 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun Pagina1Screen(navController: NavController, viewModel: ProductoViewModel = viewModel()) {
-    val productos by viewModel.productos.collectAsState()
+    val productos  by viewModel.productosFiltrados.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+
     val scope = rememberCoroutineScope()
+    val query by viewModel.searchQuery.collectAsState()
     LaunchedEffect(key1 = "pagina1") {
         viewModel.obtenerProductosPorPagina("pagina1")
+        viewModel.setSearchQuery("")
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -39,8 +42,11 @@ fun Pagina1Screen(navController: NavController, viewModel: ProductoViewModel = v
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            SearchBar()
-
+            SearchBar(
+                query         = query,
+                onQueryChanged = viewModel::setSearchQuery,
+                onClear        = { viewModel.setSearchQuery("") }
+            )
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(

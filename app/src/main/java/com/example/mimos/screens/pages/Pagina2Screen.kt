@@ -24,8 +24,10 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun Pagina2Screen(navController: NavController, viewModel: ProductoViewModel = viewModel()) {
-    val productos by viewModel.productos.collectAsState()
+    val productos  by viewModel.productosFiltrados.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
+    val query by viewModel.searchQuery.collectAsState()
+
     val scope = rememberCoroutineScope()
 
     // ✅ Cargar productos del orden 1 al 10 solo al entrar a esta pantalla
@@ -42,7 +44,11 @@ fun Pagina2Screen(navController: NavController, viewModel: ProductoViewModel = v
                 .padding(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            SearchBar()
+            SearchBar(
+                query         = query,
+                onQueryChanged = viewModel::setSearchQuery,
+                onClear        = { viewModel.setSearchQuery("") }
+            )
 
             Spacer(modifier = Modifier.height(16.dp))
 

@@ -1,26 +1,25 @@
 package com.example.mimos.screens.components
 
-import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun SearchBar() {
-    var query by remember { mutableStateOf(TextFieldValue("")) }
-    val context = LocalContext.current
-
+fun SearchBar(
+    query: String,
+    onQueryChanged: (String) -> Unit,
+    onClear: () -> Unit = {}
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -29,34 +28,31 @@ fun SearchBar() {
             .padding(horizontal = 12.dp, vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        TextField(
-            value = query,
-            onValueChange = { query = it },
+        OutlinedTextField(
+            value = query,                       // ← String simple
+            onValueChange = onQueryChanged,      // ← String directo
             placeholder = { Text("¿Qué estás buscando?") },
-            colors = TextFieldDefaults.colors(
-                focusedContainerColor = Color.Transparent,
-                unfocusedContainerColor = Color.Transparent,
-                disabledContainerColor = Color.Transparent,
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            ),
-            modifier = Modifier.weight(1f)
-        )
-        Icon(
-            imageVector = Icons.Default.Search,
-            contentDescription = "Buscar",
-            tint = Color.White,
-            modifier = Modifier
-                .size(36.dp)
-                .background(Color(0xFFFF9900), RoundedCornerShape(8.dp))
-                .padding(6.dp)
-                .clickable {
-                    if (query.text.isNotBlank()) {
-                        Toast
-                            .makeText(context, "Buscando: ${query.text}", Toast.LENGTH_SHORT)
-                            .show()
-                    }
+            modifier = Modifier.weight(1f),
+            singleLine = true,
+            leadingIcon  = { Icon(Icons.Default.Search, contentDescription = null) },
+            trailingIcon = {
+                if (query.isNotBlank()) {
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Borrar",
+                        modifier = Modifier
+                            .size(20.dp)
+                            .clickable { onClear() }
+                    )
                 }
+            },
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor   = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor  = Color.Transparent,
+                focusedIndicatorColor   = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            )
         )
     }
 }

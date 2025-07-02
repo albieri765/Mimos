@@ -203,17 +203,41 @@ fun MainScreen() {
 
 
 @Composable
-fun HomeContent(scrollState: ScrollState, navController: NavHostController,onImageClick: (Int) -> Unit) {
+fun HomeContent(
+    scrollState: ScrollState,
+    navController: NavHostController,
+    onImageClick: (Int) -> Unit,
+    viewModel: ProductoViewModel = viewModel()   // ⬅ aseguramos que llega
+) {
+    val productos by viewModel.productosFiltrados.collectAsState()
+    val query by viewModel.searchQuery.collectAsState()
+
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
             .verticalScroll(scrollState)
             .padding(16.dp)
     ) {
-        SearchBar()
-        Spacer(modifier = Modifier.height(8.dp))
+        SearchBar(
+            query = query,
+            onQueryChanged = viewModel::setSearchQuery,
+            onClear = { viewModel.setSearchQuery("") }
+        )
 
+        Spacer(Modifier.height(12.dp))
+
+        if (query.isNotBlank()) {
+            Text("Resultados: ${productos.size}", style = MaterialTheme.typography.labelLarge)
+            Spacer(Modifier.height(8.dp))
+
+            productos.forEach { prod ->
+                Text("• ${prod.nombre} (${prod.marca})", style = MaterialTheme.typography.bodyMedium)
+            }
+
+            Spacer(Modifier.height(16.dp))
+            Divider()
+            Spacer(Modifier.height(16.dp))
+        }
         Text(
             text = "¡Encuentra todo lo que tu mascota necesita!",
             style = MaterialTheme.typography.titleMedium,

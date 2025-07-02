@@ -23,7 +23,7 @@ import com.example.mimos.screens.components.FooterSection
 import kotlinx.coroutines.launch
 
 @Composable
-fun Pagina1Screen(navController: NavController, viewModel: ProductoViewModel = viewModel()) {
+fun Pagina1Screen(navController: NavController, viewModel: ProductoViewModel) {
     val productos  by viewModel.productosFiltrados.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -110,13 +110,16 @@ fun Pagina1Screen(navController: NavController, viewModel: ProductoViewModel = v
                         }
 
                         IconButton(onClick = {
+                            viewModel.agregarAlCarrito(producto)
+
+                            // 2. Muestra Snackbar y navega si el usuario pulsa "VER CARRITO"
                             scope.launch {
-                                val result = snackbarHostState.showSnackbar(
+                                val res = snackbarHostState.showSnackbar(
                                     message = "${producto.nombre} se añadió al carrito",
                                     actionLabel = "VER CARRITO"
                                 )
-                                if (result == SnackbarResult.ActionPerformed) {
-                                    navController.navigate("carrito") // ✅ Asegúrate que esta ruta exista
+                                if (res == SnackbarResult.ActionPerformed) {
+                                    navController.navigate("carrito")
                                 }
                             }
                         }) {

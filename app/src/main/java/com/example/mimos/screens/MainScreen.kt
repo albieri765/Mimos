@@ -1,4 +1,6 @@
 package com.example.mimos.screens
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -33,9 +35,11 @@ import androidx.navigation.NavHostController
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mimos.screens.carrusel.CategoriaProductosScreen
 import com.example.mimos.screens.pages.BlogScreen
+import com.example.mimos.screens.pages.CarritoScreen
 import com.example.mimos.screens.pages.CuidadosAdultoScreen
 import com.example.mimos.screens.pages.CuidadosCachorroScreen
 import com.example.mimos.screens.pages.CuidadosSeniorScreen
+import com.example.mimos.screens.pages.DogDetailScreen
 import com.example.mimos.screens.pages.FarmaciaScreen
 import com.example.mimos.screens.pages.InfoAccesoriosScreen
 import com.example.mimos.screens.pages.OfertasScreen
@@ -180,8 +184,6 @@ fun MainScreen() {
                         composable("pagina3") {
                             Pagina3Screen(navController = navController, viewModel = productoViewModel)
                         }
-                        composable("carrito") {
-                            PaginaDetalle(titulo = "Carrito")}
 
                         composable("promociones") { PromocionesScreen(navController) }
                             composable("ofertas") { OfertasScreen(navController) }
@@ -200,13 +202,24 @@ fun MainScreen() {
                         composable("recomendaciones_comida") { RecomendacionesComidaScreen(navController) }
                         composable("accesorios_info")        { InfoAccesoriosScreen(navController) }
 
+                        composable(
+                            route = "dog/{id}",
+                            arguments = listOf(navArgument("id") { type = NavType.IntType })
+                        ) { backStackEntry ->
+                            val id = backStackEntry.arguments?.getInt("id") ?: 0
+                            DogDetailScreen(navController, id)
+                        }
+                        composable("carrito") {
+                            CarritoScreen(navController, productoViewModel)
+                        }
 
+                    }
                     }
                 }
             }
         }
     }
-}
+
 
 
 @Composable
@@ -284,8 +297,9 @@ fun HomeContent(
         }
 
         Spacer(modifier = Modifier.height(24.dp))
-        SectionTitle(title = "Comida para perros")
-        FoodImageGrid { println("Clic en imagen: $it") }
+        SectionTitle(title = "Conoce a nuestros perritos")
+        FoodImageGrid(navController)   // pasa el navController
+
 
         SectionTitle(title = "Sobre Nosotros")
         InfoSection()

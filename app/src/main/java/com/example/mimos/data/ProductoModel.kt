@@ -13,5 +13,6 @@ data class ProductoModel(
     val marca: String,
     val orden: Int,
     val imagen: String?,
-    val categoria: CategoriaModel // <- CAMBIO CLAVE AQUÍ
+    val categoria: CategoriaModel,
+    val descripcion: String?, // <- CAMBIO CLAVE AQUÍ
 )

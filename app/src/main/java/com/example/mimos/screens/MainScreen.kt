@@ -176,7 +176,8 @@ fun MainScreen() {
                                         else -> "pagina1"
                                     }
                                     navController.navigate(route)
-                                }
+                                },
+                                viewModel = productoViewModel        // ✅ la instancia global
                             )
                         }
                         composable("pagina1") {
@@ -231,10 +232,10 @@ fun HomeContent(
     scrollState: ScrollState,
     navController: NavHostController,
     onImageClick: (Int) -> Unit,
-    viewModel: ProductoViewModel = viewModel()   // ⬅ aseguramos que llega
+    viewModel: ProductoViewModel      // ← sin “= viewModel()”
 ) {
     val productos by viewModel.productosFiltrados.collectAsState()
-    val query by viewModel.searchQuery.collectAsState()
+    val query     by viewModel.searchQuery.collectAsState()
 
     Column(
         modifier = Modifier

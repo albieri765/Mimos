@@ -142,6 +142,8 @@ fun MainScreen() {
                 }
 
                 Scaffold(
+                    modifier = Modifier.fillMaxSize(),        // opcional, si no lo tienes
+                    containerColor = Color.Transparent,
                     topBar = {
                         TopHeader(
                             onMenuClick = { scope.launch { drawerState.open() } },

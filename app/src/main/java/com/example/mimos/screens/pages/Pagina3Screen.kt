@@ -21,6 +21,7 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.mimos.R
 import com.example.mimos.data.ProductoModel
+import com.example.mimos.screens.components.FadeSlideIn
 import com.example.mimos.screens.components.SearchBar
 import com.example.mimos.screens.components.FooterSection
 import com.example.mimos.view.ProductoViewModel
@@ -37,7 +38,10 @@ fun Pagina3Screen(navController: NavController, viewModel: ProductoViewModel) {
     LaunchedEffect(key1 = "pagina3") {
         viewModel.obtenerProductosPorPagina("pagina3")
     }
-
+    FadeSlideIn(
+        initialY = 60.dp,
+        overshoot = 1.1f        // otros parámetros si quieres
+    ){
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -145,4 +149,4 @@ fun Pagina3Screen(navController: NavController, viewModel: ProductoViewModel) {
                 .padding(bottom = 16.dp)
         )
     }
-}
+}}

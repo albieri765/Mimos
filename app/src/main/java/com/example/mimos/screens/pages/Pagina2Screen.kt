@@ -17,6 +17,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.mimos.R
+import com.example.mimos.screens.components.FadeSlideIn
 import com.example.mimos.view.ProductoViewModel
 import com.example.mimos.screens.components.SearchBar
 import com.example.mimos.screens.components.FooterSection
@@ -35,7 +36,10 @@ fun Pagina2Screen(navController: NavController, viewModel: ProductoViewModel) {
         viewModel.obtenerProductosPorPagina("pagina2")
     }
 
-
+    FadeSlideIn(
+        initialY = 60.dp,
+        overshoot = 1.1f        // otros parámetros si quieres
+    ){
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -144,4 +148,4 @@ fun Pagina2Screen(navController: NavController, viewModel: ProductoViewModel) {
                 .padding(bottom = 16.dp)
         )
     }
-}
+}}

@@ -6,9 +6,12 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.example.mimos.ui.theme.MimosTheme
 import com.example.mimos.screens.components.SearchBar
 import com.example.mimos.screens.MainScreen
+import com.example.mimos.screens.components.FadeSlideIn
+import com.example.mimos.screens.components.FondoHuellas
 
 
 class MainActivity : ComponentActivity() {
@@ -16,12 +19,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MimosTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    MainScreen()
-
+                FondoHuellas {
+                    FadeSlideIn(            // ya incluye rebote
+                        delayMs = 0,
+                        initialY = 80.dp,   // más alto = mayor desplazamiento inicial
+                        overshoot = 1.12f   // sube para un rebote más marcado
+                    )
+                    {
+                    MainScreen()}
                 }
             }
         }

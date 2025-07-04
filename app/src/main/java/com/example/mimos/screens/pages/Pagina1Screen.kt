@@ -21,10 +21,12 @@ import com.example.mimos.view.ProductoViewModel
 import com.example.mimos.screens.components.SearchBar
 import com.example.mimos.screens.components.FooterSection
 import kotlinx.coroutines.launch
+import com.example.mimos.screens.components.FadeSlideIn
+
 
 @Composable
 fun Pagina1Screen(navController: NavController, viewModel: ProductoViewModel) {
-    val productos  by viewModel.productosFiltrados.collectAsState()
+    val productos by viewModel.productosFiltrados.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
 
     val scope = rememberCoroutineScope()
@@ -33,116 +35,123 @@ fun Pagina1Screen(navController: NavController, viewModel: ProductoViewModel) {
         viewModel.obtenerProductosPorPagina("pagina1")
         viewModel.setSearchQuery("")
     }
-
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
-                .padding(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            SearchBar(
-                query         = query,
-                onQueryChanged = viewModel::setSearchQuery,
-                onClear        = { viewModel.setSearchQuery("") }
-            )
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "¡Explora lo mejor para tu mascota!",
-                fontSize = 20.sp,
-                color = MaterialTheme.colorScheme.primary
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            // ✅ Imagen sin navegación circular
-            Image(
-                painter = painterResource(id = R.drawable.promoa),
-                contentDescription = "Promo",
+    FadeSlideIn(
+        initialY = 60.dp,
+        overshoot = 1.1f        // otros parámetros si quieres
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            Column(
                 modifier = Modifier
-                    .height(200.dp)
-                    .fillMaxWidth()
-            )
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                SearchBar(
+                    query = query,
+                    onQueryChanged = viewModel::setSearchQuery,
+                    onClear = { viewModel.setSearchQuery("") }
+                )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            Spacer(modifier = Modifier.height(32.dp))
+                Text(
+                    text = "¡Explora lo mejor para tu mascota!",
+                    fontSize = 20.sp,
+                    color = MaterialTheme.colorScheme.primary
+                )
 
-            Text(
-                text = "Hay ${productos.size} productos",
-                fontSize = 16.sp,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
+                Spacer(modifier = Modifier.height(16.dp))
 
-            productos.forEach { producto ->
-                Card(
+                // ✅ Imagen sin navegación circular
+                Image(
+                    painter = painterResource(id = R.drawable.promoa),
+                    contentDescription = "Promo",
                     modifier = Modifier
+                        .height(200.dp)
                         .fillMaxWidth()
-                        .padding(vertical = 4.dp),
-                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
-                ) {
-                    Row(
+                )
+
+                Spacer(modifier = Modifier.height(32.dp))
+
+                Text(
+                    text = "Hay ${productos.size} productos",
+                    fontSize = 16.sp,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+
+                productos.forEach { producto ->
+                    Card(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically
+                            .padding(vertical = 4.dp),
+                        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
                     ) {
-                        val imagenUrlModificada = if (!producto.imagen.isNullOrBlank()) {
-                            producto.imagen.replace("127.0.0.1", "10.0.2.2")
-                        } else {
-                            ""
-                        }
-                        AsyncImage(
-                            model = imagenUrlModificada,
-                            contentDescription = producto.nombre,
+                        Row(
                             modifier = Modifier
-                                .size(120.dp)          // un poco más pequeño si quieres
-                                .padding(end = 12.dp)  // ← separa la imagen del texto
-                        )
-
-                        Column(modifier = Modifier.weight(1f)) {
-                            Text(text = producto.nombre, fontSize = 16.sp)
-                            Text(text = "Precio: \$${producto.precio}", fontSize = 14.sp)
-                            Text(text = "Peso: ${producto.peso}", fontSize = 14.sp)
-                            Text(text = "Marca: ${producto.marca}", fontSize = 14.sp)
-                            Text(text = "Categoría: ${producto.categoria.nombre}", fontSize = 14.sp)
-
-                        }
-
-                        IconButton(onClick = {
-                            viewModel.agregarAlCarrito(producto)
-
-                            // 2. Muestra Snackbar y navega si el usuario pulsa "VER CARRITO"
-                            scope.launch {
-                                val res = snackbarHostState.showSnackbar(
-                                    message = "${producto.nombre} se añadió al carrito",
-                                    actionLabel = "VER CARRITO"
-                                )
-                                if (res == SnackbarResult.ActionPerformed) {
-                                    navController.navigate("carrito")
-                                }
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            val imagenUrlModificada = if (!producto.imagen.isNullOrBlank()) {
+                                producto.imagen.replace("127.0.0.1", "10.0.2.2")
+                            } else {
+                                ""
                             }
-                        }) {
-                            Image(
-                                painter = painterResource(id = R.drawable.ic_cart),
-                                contentDescription = "Añadir al carrito",
-                                modifier = Modifier.size(24.dp)
+                            AsyncImage(
+                                model = imagenUrlModificada,
+                                contentDescription = producto.nombre,
+                                modifier = Modifier
+                                    .size(120.dp)          // un poco más pequeño si quieres
+                                    .padding(end = 12.dp)  // ← separa la imagen del texto
                             )
+
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(text = producto.nombre, fontSize = 16.sp)
+                                Text(text = "Precio: \$${producto.precio}", fontSize = 14.sp)
+                                Text(text = "Peso: ${producto.peso}", fontSize = 14.sp)
+                                Text(text = "Marca: ${producto.marca}", fontSize = 14.sp)
+                                Text(
+                                    text = "Categoría: ${producto.categoria.nombre}",
+                                    fontSize = 14.sp
+                                )
+
+                            }
+
+                            IconButton(onClick = {
+                                viewModel.agregarAlCarrito(producto)
+
+                                // 2. Muestra Snackbar y navega si el usuario pulsa "VER CARRITO"
+                                scope.launch {
+                                    val res = snackbarHostState.showSnackbar(
+                                        message = "${producto.nombre} se añadió al carrito",
+                                        actionLabel = "VER CARRITO"
+                                    )
+                                    if (res == SnackbarResult.ActionPerformed) {
+                                        navController.navigate("carrito")
+                                    }
+                                }
+                            }) {
+                                Image(
+                                    painter = painterResource(id = R.drawable.ic_cart),
+                                    contentDescription = "Añadir al carrito",
+                                    modifier = Modifier.size(24.dp)
+                                )
+                            }
                         }
                     }
                 }
+
+                Spacer(modifier = Modifier.height(24.dp))
+                FooterSection()
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
-            FooterSection()
+            // ✅ Snackbar visual al fondo de la pantalla
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 16.dp)
+            )
         }
-
-        // ✅ Snackbar visual al fondo de la pantalla
-        SnackbarHost(
-            hostState = snackbarHostState,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 16.dp)
-        )
     }
 }

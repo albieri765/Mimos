@@ -34,7 +34,8 @@ fun FooterSection() {
                 modifier = Modifier
                     .size(32.dp)
                     .clickable {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://facebook.com"))
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/profile.php?id=61573128476366")
+                        )
                         context.startActivity(intent)
                     }
             )
@@ -44,7 +45,8 @@ fun FooterSection() {
                 modifier = Modifier
                     .size(32.dp)
                     .clickable {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://instagram.com"))
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://www.tiktok.com/@mimos.petclubtacna?_t=ZM-8xjJVZoeyIi&_r=1")
+                        )
                         context.startActivity(intent)
                     }
             )

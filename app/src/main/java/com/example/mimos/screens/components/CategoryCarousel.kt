@@ -1,6 +1,7 @@
 package com.example.mimos.screens.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
@@ -19,6 +20,8 @@ import androidx.navigation.NavController
 @Composable
 fun CategoryCarousel(navController: NavController) {
     val categories = listOf("Juguetes", "Comida", "Ropa", "Camas", "Accesorios")
+    val bgColor    = MaterialTheme.colorScheme.surfaceVariant
+    val fgColor    = MaterialTheme.colorScheme.onSurfaceVariant
 
     LazyRow(
         modifier = Modifier
@@ -34,25 +37,30 @@ fun CategoryCarousel(navController: NavController) {
                     .height(100.dp)
                     .clickable {
                         val route = when (category.lowercase()) {
-                            "juguetes" -> "categoria/juguetes"
-                            "comida" -> "categoria/comida"
-                            "ropa" -> "categoria/ropa"
-                            "camas" -> "categoria/camas"
-                            "accesorios" -> "categoria/accesorios"
-                            else -> "home"
+                            "juguetes"    -> "categoria/juguetes"
+                            "comida"      -> "categoria/comida"
+                            "ropa"        -> "categoria/ropa"
+                            "camas"       -> "categoria/camas"
+                            "accesorios"  -> "categoria/accesorios"
+                            else          -> "home"
                         }
                         navController.navigate(route)
                     }
                     .background(
-                        color = Color(0xFFF5F5F5),
+                        color = bgColor,
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    .border(
+                        width = 1.dp,
+                        color = bgColor.copy(alpha = 0.5f),
                         shape = RoundedCornerShape(16.dp)
                     ),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = category,
+                    text  = category,
                     style = MaterialTheme.typography.bodyMedium.copy(fontSize = 16.sp),
-                    color = Color.DarkGray
+                    color = fgColor
                 )
             }
         }

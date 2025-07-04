@@ -16,48 +16,67 @@ fun InfoSection() {
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
         Text(
-            text = "Bienvenido a Best for Pets",
+            text = "Bienvenidos a Mimos",
             style = MaterialTheme.typography.titleLarge
         )
 
         Text(
-            text = "Somos tu tienda en línea de confianza en Chile, dedicada a ofrecer una amplia gama de productos de alta calidad para tus mascotas. Nuestro objetivo es satisfacer todas las necesidades de tus compañeros peludos, asegurando su bienestar y felicidad."
+            text = "Somos una tienda de mascotas con corazón tacneño, dedicada a brindar lo mejor para tus compañeros peludos. En Mimos, creemos que cada mascota merece amor, salud y alegría, por eso trabajamos día a día para ofrecerte productos de calidad, con atención cercana y personalizada."
         )
 
         Text(
-            text = "Alimentos para Perros y Gatos",
+            text = "Nutrición para Perros y Gatos",
             style = MaterialTheme.typography.titleMedium
         )
 
         Text(
-            text = "En Best for Pets, entendemos la importancia de una nutrición adecuada. Por ello, ofrecemos una selección de alimentos secos y húmedos de marcas reconocidas, adaptados a las diferentes etapas de vida y requerimientos dietéticos de perros y gatos. Ya sea que busques opciones premium, super premium o dietas especializadas, aquí encontrarás lo mejor para tu mascota."
+            text = "Contamos con una variedad de alimentos secos y húmedos seleccionados para cada etapa de vida y necesidad específica. Trabajamos con marcas reconocidas a nivel nacional e internacional, ideales tanto para perritos juguetones como para gatitos exigentes. También ofrecemos opciones hipoalergénicas, sin granos y dietas veterinarias especiales."
         )
 
         Text(
-            text = "Accesorios y Juguetes",
+            text = "Accesorios, Camas y Más",
             style = MaterialTheme.typography.titleMedium
         )
 
         Text(
-            text = "Descubre nuestra variedad de accesorios que facilitan el cuidado diario de tus mascotas. Desde collares, arneses y correas hasta camas cómodas y jaulas de transporte seguras. Además, contamos con una amplia gama de juguetes interactivos y funcionales que proporcionarán horas de diversión y estimulación mental a tus amigos peludos."
+            text = "Todo lo que tu mascota necesita está aquí: collares, arneses, correas, transportadoras, camas suaves y mucho más. Cada producto es escogido pensando en la comodidad, seguridad y estilo de tu engreído."
         )
 
         Text(
-            text = "Higiene y Cuidado",
+            text = "Juguetes y Estimulación",
             style = MaterialTheme.typography.titleMedium
         )
 
         Text(
-            text = "La salud y el bienestar de tu mascota son nuestra prioridad. Por ello, ofrecemos productos de higiene como shampoos, acondicionadores y artículos de limpieza. También disponemos de antiparasitarios, suplementos y vitaminas para apoyar su salud en general."
+            text = "Sabemos que una mascota feliz es una mascota activa. En Mimos encontrarás juguetes interactivos, mordedores, peluches y opciones que estimulan mente y cuerpo, ideales para todas las edades."
         )
 
         Text(
-            text = "Beneficios de Comprar en Best for Pets",
+            text = "Higiene y Bienestar",
             style = MaterialTheme.typography.titleMedium
         )
 
         Text(
-            text = "Variedad de Productos: ..."
+            text = "Ofrecemos shampoos suaves, toallitas limpiadoras, antipulgas, peines, vitaminas y suplementos. Todos pensados para mantener a tu mascota saludable, limpia y mimada como se merece."
+        )
+
+        Text(
+            text = "¿Por qué elegir Mimos?",
+            style = MaterialTheme.typography.titleMedium
+        )
+
+        Text(
+            text = """
+                • Atención local en Tacna con amor y experiencia.  
+                • Productos seleccionados por amantes de los animales.  
+                • Promociones frecuentes y entregas a domicilio.  
+                • Asesoría personalizada y acompañamiento postventa.
+            """.trimIndent()
+        )
+
+        Text(
+            text = "Gracias por confiar en nosotros. En Mimos, tu mascota siempre será parte de nuestra familia 🐾.",
+            style = MaterialTheme.typography.bodyMedium
         )
     }
 }
